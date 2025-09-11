@@ -35,9 +35,8 @@ public class User {
 
     @AttributeOverride(name = "value", column = @Column(name = "email", columnDefinition = "string"))
     private Email email;
-
-    @AttributeOverride(name = "value", column = @Column(name = "password", columnDefinition = "string"))
-    private Password password;
+    
+    private String password;
 
     @CreatedDate
     @Column(name = "created_at")

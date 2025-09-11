@@ -9,10 +9,5 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-public class UserInput {
-    private String name;
-    private String email;
-    private String password;
+public record UserInput(String name, String email, String password) {
 }

@@ -1,6 +1,8 @@
 package br.com.andredevel.user.service.api.controller;
 
+import br.com.andredevel.user.service.api.model.LoginInput;
 import br.com.andredevel.user.service.api.model.UserInput;
+import br.com.andredevel.user.service.api.model.UserOutput;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.entity.UserId;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
@@ -40,21 +42,27 @@ public class UserController {
     public User createUser(@RequestBody UserInput userInput) {
         User newUser = User.builder()
                 .id(new UserId())
-                .name(userInput.getName())
-                .email(new Email(userInput.getEmail()))
-                .password(new Password(userInput.getPassword()))
+                .name(userInput.name())
+                .email(new Email(userInput.email()))
+                .password(userInput.password())
                 .build();
         
         return userService.save(newUser);
     }
+    
+    @PostMapping
+    @RequestMapping ("/login")  
+    public ResponseEntity<UserOutput> login(@RequestBody LoginInput loginInput) {
+        return ResponseEntity.ok(userService.login(loginInput));
+    }   
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UserInput userInput) {
         User updatedUser = User.builder()
                 .id(new UserId(id))
-                .name(userInput.getName())
-                .email(new Email(userInput.getEmail()))
-                .password(new Password(userInput.getPassword()))
+                .name(userInput.name())
+                .email(new Email(userInput.email()))
+                .password(userInput.password())
                 .build();
         return ResponseEntity.ok(userService.save(updatedUser));
     }
