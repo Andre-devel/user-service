@@ -38,8 +38,8 @@ public class UserController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody UserInput userInput) {
+    @RequestMapping ("/register")
+    public ResponseEntity<UserOutput> createUser(@RequestBody UserInput userInput) {
         User newUser = User.builder()
                 .id(new UserId())
                 .name(userInput.name())
@@ -47,7 +47,10 @@ public class UserController {
                 .password(userInput.password())
                 .build();
         
-        return userService.save(newUser);
+        userService.save(newUser);
+        UserOutput userOutput = new UserOutput(newUser.getId().getValue(), newUser.getName(), newUser.getEmail().value());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userOutput);
     }
     
     @PostMapping
