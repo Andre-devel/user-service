@@ -1,13 +1,19 @@
 package br.com.andredevel.user.service.api.model;
 
-import br.com.andredevel.user.service.domain.model.valueobject.Email;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-import java.util.UUID;
+public record UserInput(
+    @NotBlank(message = "Name is required")
+    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    String name,
 
-public record UserInput(String name, String email, String password) {
-}
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    String email,
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    String password
+) {}

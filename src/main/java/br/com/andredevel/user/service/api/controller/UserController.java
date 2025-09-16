@@ -6,11 +6,18 @@ import br.com.andredevel.user.service.api.model.UserOutput;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.entity.UserId;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
-import br.com.andredevel.user.service.domain.model.valueobject.Password;
 import br.com.andredevel.user.service.domain.service.impl.UserServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +46,7 @@ public class UserController {
 
     @PostMapping
     @RequestMapping ("/register")
-    public ResponseEntity<UserOutput> createUser(@RequestBody UserInput userInput) {
+    public ResponseEntity<UserOutput> createUser(@Valid @RequestBody UserInput userInput) {
         User newUser = User.builder()
                 .id(new UserId())
                 .name(userInput.name())
@@ -54,13 +61,13 @@ public class UserController {
     }
     
     @PostMapping
-    @RequestMapping ("/login")  
-    public ResponseEntity<UserOutput> login(@RequestBody LoginInput loginInput) {
+    @RequestMapping ("/login")
+    public ResponseEntity<UserOutput> login(@Valid @RequestBody LoginInput loginInput) {
         return ResponseEntity.ok(userService.login(loginInput));
     }   
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UserInput userInput) {
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserInput userInput) {
         User updatedUser = User.builder()
                 .id(new UserId(id))
                 .name(userInput.name())
