@@ -24,4 +24,6 @@ public interface UserService {
     Optional<User> findByEmail(Email email);
 
     UserOutput login(LoginInput loginInput);
+
+    boolean isEmailUnique(Email email, UserId excludingUserId);
 }

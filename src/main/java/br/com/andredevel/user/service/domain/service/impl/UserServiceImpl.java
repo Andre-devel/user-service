@@ -2,6 +2,7 @@ package br.com.andredevel.user.service.domain.service.impl;
 
 import br.com.andredevel.user.service.api.model.LoginInput;
 import br.com.andredevel.user.service.api.model.UserOutput;
+import br.com.andredevel.user.service.domain.exception.AuthenticationFailedException;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.entity.UserId;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
@@ -95,10 +96,15 @@ public class UserServiceImpl implements UserService {
             if (bCryptPasswordEncoder.matches(loginInput.password(), user.getPassword())) {
                 return new UserOutput(user.getId().getValue(), user.getName(), user.getEmail().value());
             } else {
-                throw new RuntimeException("Invalid password");
+                throw new AuthenticationFailedException();
             }
         } else {
-            throw new RuntimeException("User not found with email: " + loginInput.email());
+            throw new AuthenticationFailedException();
         }   
+    }
+
+    @Override
+    public boolean isEmailUnique(Email email, UserId excludingUserId) {
+        return userRepository.existsByEmailAndIdNot(email, excludingUserId);    
     }
 }

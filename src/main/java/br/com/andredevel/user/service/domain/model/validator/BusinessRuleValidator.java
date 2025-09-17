@@ -1,5 +1,7 @@
 package br.com.andredevel.user.service.domain.model.validator;
 
+import br.com.andredevel.user.service.domain.exception.DomainException;
+import br.com.andredevel.user.service.domain.exception.EmailInUseException;
 import br.com.andredevel.user.service.domain.model.entity.UserId;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
 import br.com.andredevel.user.service.domain.repository.UserRepository;
@@ -15,10 +17,9 @@ public class BusinessRuleValidator {
     }
 
     public void validateEmailUniqueness(UserId userId, Email email) {
-        userRepository.findByEmail(email).ifPresent(existingUser -> {
-            if (!existingUser.getId().equals(userId)) {
-                throw new IllegalArgumentException("Email is already in use");
-            }
-        });
+        boolean existsByEmailAndIdNot = userRepository.existsByEmailAndIdNot(email,userId);
+        if (existsByEmailAndIdNot) {
+            throw new EmailInUseException(email.value());
+        }   
     }
 }
