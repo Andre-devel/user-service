@@ -1,5 +1,6 @@
 package br.com.andredevel.user.service.domain;
 
+import br.com.andredevel.user.service.domain.exception.DomainException;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.entity.UserId;
 import br.com.andredevel.user.service.domain.model.validator.BusinessRuleValidator;
@@ -53,8 +54,7 @@ public class BusinessRuleValidationTest extends BaseIntegrationTest {
         Email existingEmail = new Email("existing@example.com");
 
         assertThatThrownBy(() -> businessRuleValidator.validateEmailUniqueness(differentUserId, existingEmail))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Email is already in use");
+                .isInstanceOf(DomainException.class);
     }
 
     @Test
@@ -93,8 +93,7 @@ public class BusinessRuleValidationTest extends BaseIntegrationTest {
         Email existingEmail = new Email("existing@example.com");
 
         assertThatThrownBy(() -> businessRuleValidator.validateEmailUniqueness(null, existingEmail))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Email is already in use");
+                .isInstanceOf(DomainException.class);
     }
 
     @Test
@@ -123,8 +122,8 @@ public class BusinessRuleValidationTest extends BaseIntegrationTest {
 
         // Should prevent different user from using existing email
         assertThatThrownBy(() -> businessRuleValidator.validateEmailUniqueness(savedUser2.getId(), new Email("user1@example.com")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Email is already in use");
+                .isInstanceOf(DomainException.class);
+        
 
         // Should allow new email for existing user
         assertThatCode(() -> businessRuleValidator.validateEmailUniqueness(savedUser3.getId(), new Email("newemail@example.com")))

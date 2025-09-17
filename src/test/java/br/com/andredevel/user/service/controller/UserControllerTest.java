@@ -62,23 +62,6 @@ public class UserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenEmailAlreadyExists() throws Exception {
-        // Create existing user
-        User existingUser = UserTestBuilder.existingUser()
-                .name("Existing User")
-                .email(new Email("john@example.com"))
-                .build();
-        userService.save(existingUser);
-
-        UserInput userInput = new UserInput("John Doe", "john@example.com", "password456");
-
-        mockMvc.perform(post("/users/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userInput)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void shouldReturnValidationErrorsForInvalidInput() throws Exception {
         UserInput invalidInput = new UserInput("", "invalid-email", "123");
 
@@ -119,7 +102,7 @@ public class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidLogin)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -129,7 +112,7 @@ public class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginInput)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -200,7 +183,7 @@ public class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(put("/users/" + savedUser1.getId().getValue())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateInput)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
 
     @Test

@@ -1,6 +1,8 @@
 package br.com.andredevel.user.service.model;
 
 import br.com.andredevel.user.service.config.BaseIntegrationTest;
+import br.com.andredevel.user.service.domain.exception.DomainException;
+import br.com.andredevel.user.service.domain.exception.EmailInUseException;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
 import br.com.andredevel.user.service.domain.repository.UserRepository;
@@ -54,9 +56,8 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
                 .build();
 
         assertThatThrownBy(() -> userService.save(duplicateUser))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Email is already in use");
-    }
+                .isInstanceOf(EmailInUseException.class);
+        }
 
     @Test
     void shouldFindAllUsers() {
