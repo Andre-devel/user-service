@@ -4,15 +4,15 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.Objects;
 
-public class FieldValidations {
-    private FieldValidations() {}
+public class FieldValidator {
+    private FieldValidator() {}
     
     public static void requireValidEmail(String email) {
        requireValidEmail(email, "Invalid email");
     }
     
     public static void requireValidPassword(String password) {
-        requireValidPassword(password, "Invalid password");
+        requireValidPassword(password, "Password must be at least 6 characters long");
     }
 
     private static void requireValidPassword(String password, String invalidPassword) {

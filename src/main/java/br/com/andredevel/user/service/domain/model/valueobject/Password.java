@@ -1,13 +1,13 @@
 package br.com.andredevel.user.service.domain.model.valueobject;
 
-import br.com.andredevel.user.service.domain.model.validator.FieldValidations;
+import br.com.andredevel.user.service.domain.model.validator.FieldValidator;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public record Password(String value) {
 
     public Password {
-        FieldValidations.requireValidPassword(value);
+        FieldValidator.requireValidPassword(value);
     }
 
     @Override

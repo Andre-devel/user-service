@@ -5,8 +5,8 @@ import br.com.andredevel.user.service.api.model.UserOutput;
 import br.com.andredevel.user.service.domain.exception.AuthenticationFailedException;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.entity.UserId;
+import br.com.andredevel.user.service.domain.model.validator.rule.EmailRuleValidator;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
-import br.com.andredevel.user.service.domain.model.validator.EmailRuleValidator;
 import br.com.andredevel.user.service.domain.repository.UserRepository;
 import br.com.andredevel.user.service.domain.service.UserService;
 import jakarta.persistence.EntityManager;
@@ -56,13 +56,13 @@ public class UserServiceImpl implements UserService {
     }
     
     private void insert(User user) {
-        EmailRuleValidator.validateEmailUniqueness(userRepository, user.getId(), user.getEmail());
+        EmailRuleValidator.validateEmailUniqueness(userRepository, user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user = userRepository.saveAndFlush(user);
     }
 
     private void update(User existingUser, User newUser) {
-        EmailRuleValidator.validateEmailUniqueness(userRepository, existingUser.getId(), newUser.getEmail());
+        EmailRuleValidator.validateEmailUniqueness(userRepository, newUser);
         User persistenceUser = merge(existingUser, newUser);
         entityManager.detach(persistenceUser);
         newUser = userRepository.saveAndFlush(persistenceUser);

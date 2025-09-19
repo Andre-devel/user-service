@@ -1,13 +1,15 @@
 package br.com.andredevel.user.service.model;
 
 import br.com.andredevel.user.service.config.BaseIntegrationTest;
-import br.com.andredevel.user.service.domain.exception.DomainException;
 import br.com.andredevel.user.service.domain.exception.EmailInUseException;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
 import br.com.andredevel.user.service.domain.repository.UserRepository;
 import br.com.andredevel.user.service.domain.service.UserService;
 import br.com.andredevel.user.service.util.UserTestBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 public class UserServiceIntegrationTest extends BaseIntegrationTest {

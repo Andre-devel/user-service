@@ -2,13 +2,15 @@ package br.com.andredevel.user.service.controller;
 
 import br.com.andredevel.user.service.api.model.LoginInput;
 import br.com.andredevel.user.service.api.model.UserInput;
+import br.com.andredevel.user.service.config.BaseIntegrationTest;
 import br.com.andredevel.user.service.domain.model.entity.User;
 import br.com.andredevel.user.service.domain.model.valueobject.Email;
 import br.com.andredevel.user.service.domain.repository.UserRepository;
 import br.com.andredevel.user.service.domain.service.UserService;
-import br.com.andredevel.user.service.config.BaseIntegrationTest;
 import br.com.andredevel.user.service.util.UserTestBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @Transactional
@@ -168,19 +171,17 @@ public class UserControllerTest extends BaseIntegrationTest {
     @Test
     void shouldReturnBadRequestWhenUpdatingWithDuplicateEmail() throws Exception {
         // Create two users
-        User user1 = UserTestBuilder.existingUser().build();
-        User user2 = UserTestBuilder.existingUser()
+        User user = UserTestBuilder.existingUser()
                 .email(new Email("john@example.com"))
                 .name("Jane Doe")
                 .build();
-
-        User savedUser1 = userService.save(user1);
-        User savedUser2 = userService.save(user2);
+        
+        User savedUser = userService.save(user);
 
         // Try to update user2 with user1's email
         UserInput updateInput = new UserInput("Jane Updated", "john@example.com", "newpassword123");
 
-        mockMvc.perform(put("/users/" + savedUser1.getId().getValue())
+        mockMvc.perform(put("/users/" + UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateInput)))
                 .andExpect(status().isConflict());
